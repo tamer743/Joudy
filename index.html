@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Jody Only</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Noto+Kufi+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: radial-gradient(circle, #330000 0%, #000000 100%); color: #fff; font-family: 'Noto Kufi Arabic', sans-serif; }
+        
+        .main-card { 
+            background: rgba(0, 0, 0, 0.8); padding: 30px; border-radius: 30px; 
+            border: 2px solid #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); 
+            width: 90%; max-width: 550px; 
+            display: flex; gap: 20px; align-items: center; position: relative;
+        }
+
+        .left-side { flex: 1; }
+        
+        /* الصورة مصغرة لـ 100px */
+        .right-side { flex: 0 0 100px; position: relative; }
+        .cover-box { width: 100px; height: 100px; border-radius: 12px; border: 2px solid #ff4d4d; object-fit: cover; transition: opacity 0.5s ease-in-out; }
+
+        .heart { position: absolute; color: #ff4d4d; font-size: 18px; pointer-events: none; animation: floatUp 1.5s linear forwards; }
+        @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-80px); opacity: 0; } }
+
+        .title { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: #ff4d4d; margin-bottom: 5px; }
+        .message-jody { font-size: 0.95rem; margin-bottom: 10px; line-height: 1.5; }
+        .song-name { font-size: 0.85rem; color: #ff4d4d; margin-bottom: 15px; font-weight: bold; }
+
+        .lyrics { height: 70px; overflow: hidden; margin: 10px 0; font-size: 0.95rem; position: relative; }
+        .line { opacity: 0; transition: 0.5s; position: absolute; width: 100%; margin: 0; }
+        .active { opacity: 1; transform: scale(1.02); text-shadow: 0 0 5px #ff4d4d; }
+
+        .play-btn { background: transparent; border: 1.5px solid #ff4d4d; color: #ff4d4d; padding: 6px 20px; font-weight: bold; border-radius: 25px; cursor: pointer; transition: 0.3s; font-family: 'Dancing Script', cursive; margin-top: 10px; }
+        .play-btn:hover { background: #ff4d4d; color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="main-card">
+        <div class="left-side">
+            <div class="title">To Jody...</div>
+            <div class="message-jody">إنتي الأهم منهم كلهم..<br>وإنتي اللي أنا عايزه من الكون ده كله</div>
+            <div class="song-name">James Dean - أمير عيد</div>
+            
+            <div class="lyrics" id="lyrics-box">
+                <p class="line" data-time="1">أنا وهي عايشين في فيلم السيما</p>
+                <p class="line" data-time="5">الصورة الـ retro والألوان جميلة</p>
+                <p class="line" data-time="9">متمردين ع الفاضي بدون قضية</p>
+                <p class="line" data-time="13">بندوس بنزين جامد عشان نهرب من الدنيا ديه</p>
+                <p class="line" data-time="17">معاكي بنسى أنا مين.. بحس إني James Dean</p>
+            </div>
+            <button class="play-btn" onclick="togglePlay()">Play Our Vibe</button>
+        </div>
+
+        <div class="right-side" id="image-container">
+            <img id="dynamic-cover" src="1.jpg" class="cover-box" alt="Cover">
+        </div>
+
+        <audio id="mySong"><source src="song.mp3" type="audio/mpeg"></audio>
+    </div>
+
+    <script>
+        const images = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg"];
+        let index = 0;
+        const imgElement = document.getElementById("dynamic-cover");
+        const container = document.getElementById("image-container");
+
+        function createHearts() {
+            let heart = document.createElement("div");
+            heart.innerHTML = "❤";
+            heart.className = "heart";
+            heart.style.left = Math.random() * 80 + "px";
+            container.appendChild(heart);
+            setTimeout(() => heart.remove(), 1500);
+        }
+
+        setInterval(() => {
+            index = (index + 1) % images.length;
+            imgElement.style.opacity = 0;
+            setTimeout(() => {
+                imgElement.src = images[index];
+                imgElement.style.opacity = 1;
+                createHearts();
+            }, 500);
+        }, 3000);
+
+        var song = document.getElementById("mySong");
+        var lines = document.querySelectorAll(".line");
+        function togglePlay() { 
+            if(song.paused) { song.play(); } else { song.pause(); }
+        }
+        song.addEventListener("timeupdate", () => {
+            lines.forEach(line => {
+                if (song.currentTime >= line.dataset.time) {
+                    lines.forEach(l => l.classList.remove("active"));
+                    line.classList.add("active");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
